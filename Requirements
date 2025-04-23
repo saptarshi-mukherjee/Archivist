@@ -1,0 +1,61 @@
+Requirement - 1
+
+Reader Requirements :-
+Search books by full name, prefix, author, series and genre.
+Add a book to the TBR pile.
+Add book to current reads.
+Add a book to read.
+Track progress of current reads.
+Rate and review a book.
+Like a review.
+Leave a comment on a review.
+Update book, series, author and reader ratings automatically.
+
+
+Admin Requirements :-
+Add a new book.
+
+
+
+
+For books having no series display “Standalone”
+Back end will return null for standalone books
+
+
+/books/search?name=”book_name”
+Request => book name
+Response =>
+Book_id : long
+Book_name : String
+Author_name : List
+Series_name : null for standalones
+Series_number : int
+Genres : List<String>
+Avg_rating : Double
+No. of ratings : int
+Reviews : List<Review>
+
+
+Review Object =>
+Review_id
+Reader_name
+Review Text
+
+
+
+
+/reader/register
+
+Request =>
+Reader_name : string
+Reader_email : string
+Reader_address : string
+Reader_phone : number (long)
+Reader_birthday : DD/MM/YYYY (string)
+
+
+Response =>
+User registration successful : string
+
+
+
