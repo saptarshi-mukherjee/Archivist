@@ -9,8 +9,9 @@ public class BookResponseDto {
     private String book_name, series_name;
     private List<String> authors, genres;
     private Double avg_rating;
-    private Integer book_number, rating_count, review_count;
+    private Integer rating_count, review_count;
     private List<Review> reviews;
+    private Double book_number;
 
 
     public BookResponseDto() {
@@ -59,14 +60,6 @@ public class BookResponseDto {
         this.avg_rating = avg_rating;
     }
 
-    public Integer getBook_number() {
-        return book_number;
-    }
-
-    public void setBook_number(Integer book_number) {
-        this.book_number = book_number;
-    }
-
     public Integer getRating_count() {
         return rating_count;
     }
@@ -89,5 +82,13 @@ public class BookResponseDto {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public Double getBook_number() {
+        return book_number;
+    }
+
+    public void setBook_number(Double book_number) {
+        this.book_number = book_number;
     }
 }

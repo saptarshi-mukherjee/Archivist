@@ -30,14 +30,14 @@ public class BookController {
         List<String> authors=request.getAuthors();
         List<String> genres=request.getGenres();
         Integer page_count= request.getPage_count();
-        Integer book_number= request.getBook_number();
+        Double book_number= request.getBook_number();
         Book book=book_service.addBook(book_name,authors,isbn,page_count,type,series_name,genres,book_number);
         BookResponseDto response=new BookResponseDto();
         response.setBook_name(book.getBook_name());
         for(Author author : book.getAuthors())
             response.getAuthors().add(author.getAuthor_name());
         response.setSeries_name(book.getSeries().getSeries_name());
-        response.setBook_number((book.getSeries().getBooks().indexOf(book))+1);
+        response.setBook_number(book.getBook_entry().getBook_number());
         for(Genre genre : book.getGenres())
             response.getGenres().add(genre.getGenre_name());
         response.setAvg_rating(book.getAvg_rating());

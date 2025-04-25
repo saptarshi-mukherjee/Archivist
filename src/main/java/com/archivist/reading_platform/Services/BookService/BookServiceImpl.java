@@ -23,11 +23,13 @@ public class BookServiceImpl implements BookService {
     GenreRepository genre_repo;
     @Autowired
     SeriesRepository series_repo;
+    @Autowired
+    BookEntryRepository entry_repo;
 
 
     @Override
-    public Book addBook(String book_name, List<String> author_list, String isbn, Integer page_count, String type, String series_name, List<String> genre_list, Integer book_number) {
-        BookInsertionStrategy strategy=new CheckAndInsertStrategy(book_repo,author_repo,format_repo,genre_repo,series_repo);
+    public Book addBook(String book_name, List<String> author_list, String isbn, Integer page_count, String type, String series_name, List<String> genre_list, Double book_number) {
+        BookInsertionStrategy strategy=new CheckAndInsertStrategy(book_repo,author_repo,format_repo,genre_repo,series_repo,entry_repo);
         Book book=strategy.insert(book_name,author_list,isbn,page_count,type,series_name,genre_list,book_number);
         return book;
     }

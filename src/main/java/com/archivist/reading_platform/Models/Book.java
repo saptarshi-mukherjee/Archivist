@@ -43,6 +43,9 @@ public class Book {
     @OneToMany(mappedBy = "book")
     @JsonManagedReference
     private List<Review> reviews;
+    @OneToOne(mappedBy = "book")
+    @JsonManagedReference
+    private BookEntry book_entry;
 
 
     public Book() {
@@ -56,6 +59,14 @@ public class Book {
         reviews=new ArrayList<>();
     }
 
+
+    public BookEntry getBook_entry() {
+        return book_entry;
+    }
+
+    public void setBook_entry(BookEntry book_entry) {
+        this.book_entry = book_entry;
+    }
 
     public Long getId() {
         return id;

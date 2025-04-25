@@ -5,7 +5,8 @@ import java.util.List;
 public class NewBookRequestDto {
     private String book_name, series_name, isbn, type;
     private List<String> authors, genres;
-    private Integer page_count, book_number;
+    private Integer page_count;
+    Double book_number;
 
 
     public String getBook_name() {
@@ -64,11 +65,11 @@ public class NewBookRequestDto {
         this.page_count = page_count;
     }
 
-    public Integer getBook_number() {
+    public Double getBook_number() {
         return book_number;
     }
 
-    public void setBook_number(Integer book_number) {
+    public void setBook_number(Double book_number) {
         this.book_number = book_number;
     }
 }

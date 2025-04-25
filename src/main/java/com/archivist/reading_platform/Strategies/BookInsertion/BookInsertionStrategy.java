@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface BookInsertionStrategy {
     public Book insert(String book_name, List<String> author_list, String isbn, Integer page_count, String type,
-                       String series_name, List<String> genre_list, Integer book_number);
+                       String series_name, List<String> genre_list, Double book_number);
 }

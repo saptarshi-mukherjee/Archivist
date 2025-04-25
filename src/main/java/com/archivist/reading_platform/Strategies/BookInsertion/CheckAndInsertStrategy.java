@@ -14,24 +14,29 @@ public class CheckAndInsertStrategy implements BookInsertionStrategy {
     FormatRepository format_repo;
     GenreRepository genre_repo;
     SeriesRepository series_repo;
+    BookEntryRepository entry_repo;
 
 
-    public CheckAndInsertStrategy(BookRepository book_repo, AuthorRepository author_repo, FormatRepository format_repo, GenreRepository genre_repo, SeriesRepository series_repo) {
+    public CheckAndInsertStrategy(BookRepository book_repo, AuthorRepository author_repo, FormatRepository format_repo,
+                                  GenreRepository genre_repo, SeriesRepository series_repo,
+                                  BookEntryRepository entry_repo) {
         this.book_repo = book_repo;
         this.author_repo = author_repo;
         this.format_repo = format_repo;
         this.genre_repo = genre_repo;
         this.series_repo = series_repo;
+        this.entry_repo=entry_repo;
     }
 
     @Override
-    public Book insert(String book_name, List<String> author_list, String isbn, Integer page_count, String type, String series_name, List<String> genre_list, Integer book_number) {
+    public Book insert(String book_name, List<String> author_list, String isbn, Integer page_count, String type, String series_name, List<String> genre_list, Double book_number) {
         Book book=createBook(book_name);
         book=book_repo.save(book);
         Format format=createFormat(isbn,page_count,type);
         Series series=createSeries(series_name);
         List<Author> authors=createAuthors(author_list);
         List<Genre> genres=createGenres(genre_list);
+        BookEntry book_entry=createBookEntry(book.getId(),book_number);
         if(!book.getFormats().contains(format))
             book.getFormats().add(format);
         format.setBook(book);
@@ -39,13 +44,19 @@ public class CheckAndInsertStrategy implements BookInsertionStrategy {
         book=book_repo.save(book);
         book.setSeries(series);
         if(!series.getBooks().contains(book)) {
-            if(series.getSeries_name().equals("standalone"))
-                series.getBooks().add(book);
-            else
-                series.getBooks().add(book_number-1,book);
+            series.getBooks().add(book);
         }
-        series_repo.save(series);
+        series=series_repo.save(series);
         book=book_repo.save(book);
+        book_entry.setBook(book);
+        book.setBook_entry(book_entry);
+        book_entry=entry_repo.save(book_entry);
+        book=book_repo.save(book);
+        book_entry.setSeries(series);
+        if(!series.getBook_entries().contains(book_entry))
+            series.getBook_entries().add(book_entry);
+        series_repo.save(series);
+        book_entry=entry_repo.save(book_entry);
         for(Author author : authors) {
             if(!book.getAuthors().contains(author))
                 book.getAuthors().add(author);
@@ -124,5 +135,15 @@ public class CheckAndInsertStrategy implements BookInsertionStrategy {
             series.setSeries_name(series_name);
         }
         return series;
+    }
+
+
+    private BookEntry createBookEntry(Long book_id, Double book_number) {
+        BookEntry book_entry=entry_repo.fetchByBookId(book_id);
+        if(book_entry==null) {
+            book_entry=new BookEntry();
+            book_entry.setBook_number(book_number);
+        }
+        return book_entry;
     }
 }

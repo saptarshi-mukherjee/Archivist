@@ -21,14 +21,26 @@ public class Series {
     @OneToMany(mappedBy = "series")
     @JsonManagedReference
     private List<Rating> ratings;
+    @OneToMany(mappedBy = "series")
+    @JsonManagedReference
+    private List<BookEntry> book_entries;
 
 
     public Series() {
         avg_rating=0.0;
         books=new ArrayList<>();
         ratings=new ArrayList<>();
+        book_entries=new ArrayList<>();
     }
 
+
+    public List<BookEntry> getBook_entries() {
+        return book_entries;
+    }
+
+    public void setBook_entries(List<BookEntry> book_entries) {
+        this.book_entries = book_entries;
+    }
 
     public Long getId() {
         return id;
