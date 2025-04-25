@@ -3,6 +3,7 @@ package com.archivist.reading_platform.Controllers.BookController;
 
 import com.archivist.reading_platform.DTO.RequestDTO.NewBookRequestDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.BookResponseDto;
+import com.archivist.reading_platform.DTO.ResponseDTO.GeneralSearchResponseDto;
 import com.archivist.reading_platform.Models.Author;
 import com.archivist.reading_platform.Models.Book;
 import com.archivist.reading_platform.Models.Genre;
@@ -10,6 +11,7 @@ import com.archivist.reading_platform.Services.BookService.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,5 +47,22 @@ public class BookController {
         response.setReviews(book.getReviews());
         response.setReview_count(book.getReviews().size());
         return response;
+    }
+
+
+
+    @GetMapping("/get/all")
+    public List<GeneralSearchResponseDto> search(@RequestParam("search") String prefix) {
+        List<GeneralSearchResponseDto> response_list=new ArrayList<>();
+        List<Book> books=book_service.generalSearch(prefix);
+        for(Book book : books) {
+            GeneralSearchResponseDto response=new GeneralSearchResponseDto();
+            response.setBook_name(book.getBook_name());
+            for(Author author : book.getAuthors())
+                response.getAuthor_name().add(author.getAuthor_name());
+            response.setSeries_name(book.getSeries().getSeries_name());
+            response_list.add(response);
+        }
+        return response_list;
     }
 }
