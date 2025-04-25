@@ -152,4 +152,24 @@ public class Book {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Book book=null;
+        if(o==null)
+            return false;
+        if(o instanceof Book)
+            book=(Book) o;
+        else
+            return false;
+        return book_name.equals(book.getBook_name());
+    }
+
+    @Override
+    public int hashCode() {
+        if(book_name != null)
+            return book_name.hashCode();
+        else
+            return 0;
+    }
 }

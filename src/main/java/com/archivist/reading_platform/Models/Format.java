@@ -77,4 +77,26 @@ public class Format {
     public void setCurrent_reads(List<CurrentlyReading> current_reads) {
         this.current_reads = current_reads;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        Format format=null;
+        if(o==null)
+            return false;
+        if(o instanceof Format)
+            format=(Format) o;
+        else
+            return false;
+        return isbn.equals(format.getIsbn());
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(isbn!=null)
+            return isbn.hashCode();
+        else
+            return 0;
+    }
 }

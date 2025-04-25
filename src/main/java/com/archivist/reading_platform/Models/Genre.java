@@ -47,4 +47,26 @@ public class Genre {
     public void setBooks(List<Book> books) {
         this.books = books;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        Genre genre=null;
+        if(o==null)
+            return false;
+        if(o instanceof Genre)
+            genre=(Genre) o;
+        else
+            return false;
+        return genre_name.equals(genre.getGenre_name());
+    }
+
+
+    @Override
+    public int hashCode() {
+        if (genre_name!=null)
+            return genre_name.hashCode();
+        else
+            return 0;
+    }
 }

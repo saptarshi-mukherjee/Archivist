@@ -69,4 +69,26 @@ public class Series {
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        Series series=null;
+        if(o==null)
+            return false;
+        if(o instanceof Series)
+            series=(Series) o;
+        else
+            return false;
+        return series_name.equals(series.getSeries_name());
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(series_name!=null)
+            return series_name.hashCode();
+        else
+            return 0;
+    }
 }

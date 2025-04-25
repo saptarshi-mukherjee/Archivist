@@ -70,4 +70,25 @@ public class Author {
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Author author=null;
+        if(o==null)
+            return false;
+        if(o instanceof Author)
+            author=(Author) o;
+        else
+            return false;
+        return author_name.equals(author.getAuthor_name());
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(author_name!=null)
+            return author_name.hashCode();
+        else
+            return 0;
+    }
 }
