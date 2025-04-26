@@ -3,6 +3,7 @@ package com.archivist.reading_platform.Services.BookService;
 
 import com.archivist.reading_platform.Models.Author;
 import com.archivist.reading_platform.Models.Book;
+import com.archivist.reading_platform.Models.BookEntry;
 import com.archivist.reading_platform.Models.Series;
 import com.archivist.reading_platform.Repositories.*;
 import com.archivist.reading_platform.Strategies.BookInsertion.BookInsertionStrategy;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -51,5 +54,24 @@ public class BookServiceImpl implements BookService {
             results.addAll(series.getBooks());
         }
         return results;
+    }
+
+    @Override
+    public List<BookEntry> searchBooksInSeries(String series_name) {
+        Series series=series_repo.fetchBySeriesName(series_name);
+        List<BookEntry> book_entries=series.getBook_entries();
+        Comparator<BookEntry> comp=new Comparator<BookEntry>() {
+            @Override
+            public int compare(BookEntry o1, BookEntry o2) {
+                if(o2.getBook_number()< o1.getBook_number())
+                    return 1;
+                else if(o2.getBook_number()>o1.getBook_number())
+                    return -1;
+                else
+                    return 0;
+            }
+        };
+        Collections.sort(book_entries,comp);
+        return book_entries;
     }
 }

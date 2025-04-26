@@ -22,4 +22,6 @@ public interface SeriesRepository extends JpaRepository<Series,Long> {
             nativeQuery = true
     )
     public List<Series> fetchSeriesByPrefix(@Param("prefix") String prefix);
+
+
 }

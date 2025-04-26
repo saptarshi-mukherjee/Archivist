@@ -2,10 +2,12 @@ package com.archivist.reading_platform.Controllers.BookController;
 
 
 import com.archivist.reading_platform.DTO.RequestDTO.NewBookRequestDto;
+import com.archivist.reading_platform.DTO.ResponseDTO.BookListResponseDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.BookResponseDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.GeneralSearchResponseDto;
 import com.archivist.reading_platform.Models.Author;
 import com.archivist.reading_platform.Models.Book;
+import com.archivist.reading_platform.Models.BookEntry;
 import com.archivist.reading_platform.Models.Genre;
 import com.archivist.reading_platform.Services.BookService.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,20 @@ public class BookController {
             for(Author author : book.getAuthors())
                 response.getAuthor_name().add(author.getAuthor_name());
             response.setSeries_name(book.getSeries().getSeries_name());
+            response_list.add(response);
+        }
+        return response_list;
+    }
+
+
+    @GetMapping("/get/series")
+    public List<BookListResponseDto> searchSeries(@RequestParam("search") String series_name) {
+        List<BookEntry> book_entries=book_service.searchBooksInSeries(series_name);
+        List<BookListResponseDto> response_list=new ArrayList<>();
+        for(BookEntry book_entry : book_entries) {
+            BookListResponseDto response=new BookListResponseDto();
+            response.setBook_name(book_entry.getBook().getBook_name());
+            response.setBook_number(book_entry.getBook_number());
             response_list.add(response);
         }
         return response_list;
