@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +28,23 @@ public class Review {
     @OneToMany(mappedBy = "review")
     @JsonManagedReference
     private List<Comment> comments;
+    private LocalDateTime review_time;
 
 
     public Review() {
         like_count=0;
         comments=new ArrayList<>();
+        this.setReview_time(LocalDateTime.now());
     }
 
+
+    public LocalDateTime getReview_time() {
+        return review_time;
+    }
+
+    public void setReview_time(LocalDateTime review_time) {
+        this.review_time = review_time;
+    }
 
     public Long getId() {
         return id;

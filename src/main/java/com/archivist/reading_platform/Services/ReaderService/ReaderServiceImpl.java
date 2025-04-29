@@ -30,6 +30,10 @@ public class ReaderServiceImpl implements ReaderService {
     SeriesRepository series_repo;
     @Autowired
     AuthorRepository author_repo;
+    @Autowired
+    ReviewRepository review_repo;
+    @Autowired
+    CommentRepository comment_repo;
 
 
     @Override
@@ -78,5 +82,53 @@ public class ReaderServiceImpl implements ReaderService {
             author_repo.save(author);
         }
         return book;
+    }
+
+    @Override
+    public Book reviewBook(String reader_name, String book_name, String review_text) {
+        Book book=book_repo.fetchByBookName(book_name);
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        Review review=new Review();
+        review.setBook(book);
+        review.setReader(reader);
+        review.setReview_text(review_text);
+        review=review_repo.save(review);
+        book.getReviews().add(review);
+        book=book_repo.save(book);
+        reader.getReviews().add(review);
+        reader_repo.save(reader);
+        return book;
+    }
+
+    @Override
+    public Review likeReview(long review_id) {
+        Review review=review_repo.fetchByReviewId(review_id);
+        review.setLike_count(review.getLike_count()+1);
+        review=review_repo.save(review);
+        return review;
+    }
+
+    @Override
+    public Comment commentOnReview(long review_id, String reader_name, String comment_text) {
+        Review review=review_repo.fetchByReviewId(review_id);
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        Comment comment=new Comment();
+        comment.setReader(reader);
+        comment.setReview(review);
+        comment.setComment_text(comment_text);
+        comment=comment_repo.save(comment);
+        review.getComments().add(comment);
+        review_repo.save(review);
+        reader.getComments().add(comment);
+        reader_repo.save(reader);
+        return comment;
+    }
+
+    @Override
+    public Comment likeComment(long comment_id) {
+        Comment comment=comment_repo.fetchByCommentId(comment_id);
+        comment.setLike_count(comment.getLike_count()+1);
+        comment=comment_repo.save(comment);
+        return comment;
     }
 }

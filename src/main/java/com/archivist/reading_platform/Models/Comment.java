@@ -4,6 +4,8 @@ package com.archivist.reading_platform.Models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Comment {
 
@@ -20,12 +22,22 @@ public class Comment {
     @ManyToOne
     @JsonBackReference
     private Reader reader;
+    private LocalDateTime comment_time;
 
 
     public Comment() {
         like_count=0;
+        this.setComment_time(LocalDateTime.now());
     }
 
+
+    public LocalDateTime getComment_time() {
+        return comment_time;
+    }
+
+    public void setComment_time(LocalDateTime comment_time) {
+        this.comment_time = comment_time;
+    }
 
     public Long getId() {
         return id;
