@@ -120,4 +120,22 @@ public class ReaderController {
         return response;
     }
 
+
+
+    @PostMapping("/add/tbr")
+    public List<TbrResponseDto> addToTbr(@RequestParam("book") String book_name,
+                                         @RequestParam("reader") String reader_name) {
+        Reader reader=reader_service.addToTBR(reader_name,book_name);
+        List<TbrResponseDto> response_list=new ArrayList<>();
+        for(ToRead tbr : reader.getTbr()) {
+            TbrResponseDto response=new TbrResponseDto();
+            response.setBook_name(tbr.getBook().getBook_name());
+            response.setSeries_name(tbr.getBook().getSeries().getSeries_name());
+            for(Author author : tbr.getBook().getAuthors())
+                response.getAuthor_names().add(author.getAuthor_name());
+            response_list.add(response);
+        }
+        return response_list;
+    }
+
 }

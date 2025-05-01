@@ -34,6 +34,8 @@ public class ReaderServiceImpl implements ReaderService {
     ReviewRepository review_repo;
     @Autowired
     CommentRepository comment_repo;
+    @Autowired
+    ToReadRepository tbr_repo;
 
 
     @Override
@@ -130,5 +132,25 @@ public class ReaderServiceImpl implements ReaderService {
         comment.setLike_count(comment.getLike_count()+1);
         comment=comment_repo.save(comment);
         return comment;
+    }
+
+    @Override
+    public Reader addToTBR(String reader_name, String book_name) {
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        Book book=book_repo.fetchByBookName(book_name);
+        long book_id=book.getId();
+        ToRead tbr=tbr_repo.fetchByBookId(book_id);
+        if(tbr==null) {
+            tbr=new ToRead();
+            tbr.setBook(book);
+            tbr.getReaders().add(reader);
+        }
+        else {
+            tbr.getReaders().add(reader);
+        }
+        tbr=tbr_repo.save(tbr);
+        reader.getTbr().add(tbr);
+        reader=reader_repo.save(reader);
+        return reader;
     }
 }

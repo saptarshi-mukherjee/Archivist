@@ -12,4 +12,5 @@ public interface ReaderService {
     public Review likeReview(long review_id);
     public Comment commentOnReview(long review_id, String reader_name, String comment_text);
     public Comment likeComment(long comment_id);
+    public Reader addToTBR(String reader_name, String book_name);
 }
