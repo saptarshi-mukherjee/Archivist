@@ -50,4 +50,27 @@ public class ToRead {
     public void setReaders(List<Reader> readers) {
         this.readers = readers;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        ToRead tbr_entry=null;
+        if(this==obj)
+            return true;
+        if(obj instanceof ToRead)
+            tbr_entry=(ToRead) obj;
+        else
+            return false;
+        return (book!=null && book.getBook_name()!=null
+                && book.getBook_name().equals(tbr_entry.getBook().getBook_name()));
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(book!=null && book.getBook_name()!=null)
+            return book.getBook_name().hashCode();
+        else
+            return 0;
+    }
 }

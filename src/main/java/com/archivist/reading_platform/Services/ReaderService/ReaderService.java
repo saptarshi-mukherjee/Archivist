@@ -1,9 +1,8 @@
 package com.archivist.reading_platform.Services.ReaderService;
 
-import com.archivist.reading_platform.Models.Book;
-import com.archivist.reading_platform.Models.Comment;
-import com.archivist.reading_platform.Models.Reader;
-import com.archivist.reading_platform.Models.Review;
+import com.archivist.reading_platform.Models.*;
+
+import java.util.List;
 
 public interface ReaderService {
     public Reader registerReader(String name, String email, String address, Long phone, String birthday);
@@ -13,4 +12,6 @@ public interface ReaderService {
     public Comment commentOnReview(long review_id, String reader_name, String comment_text);
     public Comment likeComment(long comment_id);
     public Reader addToTBR(String reader_name, String book_name);
+    public List<ToRead> getTbr(String reader_name);
+    public List<CurrentlyReading> addToCurrentlyReading(String reader_name, String book_name,String isbn);
 }

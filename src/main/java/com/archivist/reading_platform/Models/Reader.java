@@ -108,4 +108,26 @@ public class Reader extends User {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        Reader reader=null;
+        if(this==obj)
+            return true;
+        if(obj instanceof Reader)
+            reader=(Reader) obj;
+        else
+            return false;
+        return name.equals(reader.getName());
+    }
+
+
+    @Override
+    public int hashCode() {
+        if(name!=null)
+            return name.hashCode();
+        else
+            return 0;
+    }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class CurrentlyReading {
@@ -24,6 +25,11 @@ public class CurrentlyReading {
     @JsonBackReference
     private Reader reader;
 
+
+    public CurrentlyReading() {
+        this.setStart_date(LocalDate.now());
+        this.setProgress(0.0);
+    }
 
     public Long getId() {
         return id;

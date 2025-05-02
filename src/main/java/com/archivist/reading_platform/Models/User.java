@@ -10,9 +10,9 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name, address, email;
-    private Long phone;
+    protected Long id;
+    protected String name, address, email;
+    protected Long phone;
 
 
     public Long getId() {

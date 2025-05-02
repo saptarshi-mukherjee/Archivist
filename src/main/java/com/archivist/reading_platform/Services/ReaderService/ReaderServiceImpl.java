@@ -1,7 +1,9 @@
 package com.archivist.reading_platform.Services.ReaderService;
 
+import com.archivist.reading_platform.Factories.CurrentlyReadingStrategyFactory;
 import com.archivist.reading_platform.Models.*;
 import com.archivist.reading_platform.Repositories.*;
+import com.archivist.reading_platform.Strategies.AddToCurrentlyReading.CurrentlyReadingStrategy;
 import com.archivist.reading_platform.Strategies.AverageRatingCalculation.AverageCalculationStrategy;
 import com.archivist.reading_platform.Strategies.AverageRatingCalculation.SimpleAverageCalculationStrategy;
 import com.archivist.reading_platform.Strategies.DateNormalisation.BasicStrategy;
@@ -36,6 +38,10 @@ public class ReaderServiceImpl implements ReaderService {
     CommentRepository comment_repo;
     @Autowired
     ToReadRepository tbr_repo;
+    @Autowired
+    FormatRepository format_repo;
+    @Autowired
+    CurrentlyReadingRepository current_read_repo;
 
 
     @Override
@@ -152,5 +158,19 @@ public class ReaderServiceImpl implements ReaderService {
         reader.getTbr().add(tbr);
         reader=reader_repo.save(reader);
         return reader;
+    }
+
+    @Override
+    public List<ToRead> getTbr(String reader_name) {
+        return reader_repo.fetchByReaderName(reader_name).getTbr();
+    }
+
+    @Override
+    public List<CurrentlyReading> addToCurrentlyReading(String reader_name, String book_name, String isbn) {
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        Book book=book_repo.fetchByBookName(book_name);
+        CurrentlyReadingStrategy strategy= CurrentlyReadingStrategyFactory.getStrategy(reader_repo,tbr_repo,reader,book);
+        List<CurrentlyReading> current_reads=strategy.addToCurrentlyReading(format_repo,current_read_repo,isbn);
+        return current_reads;
     }
 }

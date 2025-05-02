@@ -1,10 +1,7 @@
 package com.archivist.reading_platform.Controllers.ReaderController;
 
 
-import com.archivist.reading_platform.DTO.RequestDTO.CommentRequestDto;
-import com.archivist.reading_platform.DTO.RequestDTO.RateBookRequestDto;
-import com.archivist.reading_platform.DTO.RequestDTO.ReaderRegistrationRequestDto;
-import com.archivist.reading_platform.DTO.RequestDTO.ReviewRequestDto;
+import com.archivist.reading_platform.DTO.RequestDTO.*;
 import com.archivist.reading_platform.DTO.ResponseDTO.*;
 import com.archivist.reading_platform.Models.*;
 import com.archivist.reading_platform.Services.ReaderService.ReaderService;
@@ -138,4 +135,34 @@ public class ReaderController {
         return response_list;
     }
 
+
+    @GetMapping("/get/tbr/{reader_name}")
+    public List<TbrResponseDto> getTbr(@PathVariable("reader_name") String reader_name) {
+        List<ToRead> tbr_entries=reader_service.getTbr(reader_name);
+        List<TbrResponseDto> response_list=new ArrayList<>();
+        for(ToRead tbr : tbr_entries) {
+            TbrResponseDto response=new TbrResponseDto();
+            response.setBook_name(tbr.getBook().getBook_name());
+            response.setSeries_name(tbr.getBook().getSeries().getSeries_name());
+            for(Author author : tbr.getBook().getAuthors())
+                response.getAuthor_names().add(author.getAuthor_name());
+            response_list.add(response);
+        }
+        return response_list;
+    }
+
+
+
+    @PostMapping("/add/currently-reading")
+    public List<CurrentlyReadingResponseDto> addToCurrentlyReading(@RequestBody AddToCurrentlyReadingRequestDto request) {
+        List<CurrentlyReading> current_reads=reader_service.addToCurrentlyReading(request.getReader_name(), request.getBook_name(), request.getIsbn());
+        List<CurrentlyReadingResponseDto> response_list=new ArrayList<>();
+        for(CurrentlyReading current_read : current_reads) {
+            CurrentlyReadingResponseDto response=new CurrentlyReadingResponseDto();
+            response.setBook_name(current_read.getBook().getBook_name());
+            response.setProgress(current_read.getProgress());
+            response_list.add(response);
+        }
+        return response_list;
+    }
 }
