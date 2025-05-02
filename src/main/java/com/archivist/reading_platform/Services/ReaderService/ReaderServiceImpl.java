@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -172,5 +174,34 @@ public class ReaderServiceImpl implements ReaderService {
         CurrentlyReadingStrategy strategy= CurrentlyReadingStrategyFactory.getStrategy(reader_repo,tbr_repo,reader,book);
         List<CurrentlyReading> current_reads=strategy.addToCurrentlyReading(format_repo,current_read_repo,isbn);
         return current_reads;
+    }
+
+    @Override
+    public List<CurrentlyReading> getCurrentlyReading(String reader_name) {
+        return reader_repo.fetchByReaderName(reader_name).getCurrent_reads();
+    }
+
+    @Override
+    public List<CurrentlyReading> updateProgress(String book_name, String reader_name, int page_no) throws Exception {
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        List<CurrentlyReading> current_reads=reader.getCurrent_reads();
+        CurrentlyReading temp=null;
+        for(CurrentlyReading current_read : current_reads) {
+            if(current_read.getBook().getBook_name().equals(book_name)) {
+                temp=current_read;
+                break;
+            }
+        }
+        if(temp==null)
+            throw new Exception("add to currently reading first");
+        int total_pages=temp.getFormat().getPage_count();
+        if(page_no>total_pages)
+            throw new Exception("exceeds total page count");
+        double progress=((double) page_no/total_pages)*100;
+        progress=new BigDecimal(progress).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        temp.setProgress(progress);
+        current_read_repo.save(temp);
+        reader=reader_repo.save(reader);
+        return reader.getCurrent_reads();
     }
 }

@@ -165,4 +165,32 @@ public class ReaderController {
         }
         return response_list;
     }
+
+
+    @GetMapping("/get/currently-reading/{reader_name}")
+    public List<CurrentlyReadingResponseDto> getCurrentlyReading(@PathVariable("reader_name") String reader_name) {
+        List<CurrentlyReading> current_reads=reader_service.getCurrentlyReading(reader_name);
+        List<CurrentlyReadingResponseDto> response_list=new ArrayList<>();
+        for(CurrentlyReading current_read : current_reads) {
+            CurrentlyReadingResponseDto response=new CurrentlyReadingResponseDto();
+            response.setBook_name(current_read.getBook().getBook_name());
+            response.setProgress(current_read.getProgress());
+            response_list.add(response);
+        }
+        return response_list;
+    }
+
+
+    @PutMapping("/put/currently-reading")
+    public List<CurrentlyReadingResponseDto> updateProgress(@RequestBody UpdateProgressRequestDto request) throws Exception {
+        List<CurrentlyReading> current_reads=reader_service.updateProgress(request.getBook_name(), request.getReader_name(), request.getPage_no());
+        List<CurrentlyReadingResponseDto> response_list=new ArrayList<>();
+        for(CurrentlyReading current_read : current_reads) {
+            CurrentlyReadingResponseDto response=new CurrentlyReadingResponseDto();
+            response.setBook_name(current_read.getBook().getBook_name());
+            response.setProgress(current_read.getProgress());
+            response_list.add(response);
+        }
+        return response_list;
+    }
 }
