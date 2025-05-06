@@ -10,6 +10,7 @@ import com.archivist.reading_platform.Strategies.DateNormalisation.BasicStrategy
 import com.archivist.reading_platform.Strategies.DateNormalisation.IndianFormatStrategy;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,6 +45,8 @@ public class ReaderServiceImpl implements ReaderService {
     FormatRepository format_repo;
     @Autowired
     CurrentlyReadingRepository current_read_repo;
+    @Autowired
+    ReadRepository read_repo;
 
 
     @Override
@@ -203,5 +206,49 @@ public class ReaderServiceImpl implements ReaderService {
         current_read_repo.save(temp);
         reader=reader_repo.save(reader);
         return reader.getCurrent_reads();
+    }
+
+    @Override
+    public List<Read> addToRead(String reader_name, String book_name, String isbn) throws Exception {
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        List<CurrentlyReading> current_reads=reader.getCurrent_reads();
+        int index=-1;
+        for(int i=0;i<current_reads.size();i++) {
+            if(current_reads.get(i).getBook().getBook_name().equals(book_name) &&
+                current_reads.get(i).getFormat().getIsbn().equals(isbn)) {
+                index=i;
+                break;
+            }
+        }
+        if(index==-1)
+            throw new Exception("Read the book first");
+        Read read=new Read();
+        read.setBook(current_reads.get(index).getBook());
+        read.setReader(current_reads.get(index).getReader());
+        read.setFormat(current_reads.get(index).getFormat());
+        read.setStart_date(current_reads.get(index).getStart_date());
+        read.setEnd_date(LocalDate.now());
+        read=read_repo.save(read);
+        current_read_repo.delete(current_reads.get(index));
+        current_reads.remove(index);
+        reader.setCurrent_reads(current_reads);
+        Format format=read.getFormat();
+        format.getReads().add(read);
+        format_repo.save(format);
+        reader.getReads().add(read);
+        reader=reader_repo.save(reader);
+        return reader.getReads();
+    }
+
+    @Override
+    public List<Read> getReads(String reader_name) {
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        return reader.getReads();
+    }
+
+    @Override
+    @Scheduled(cron = "0 */2 * * * *")
+    public void testScheduled() {
+        System.out.println("PRINTING!!!!!");
     }
 }

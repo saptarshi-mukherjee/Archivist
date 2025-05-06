@@ -78,4 +78,5 @@ public class CurrentlyReading {
     public void setReader(Reader reader) {
         this.reader = reader;
     }
+
 }

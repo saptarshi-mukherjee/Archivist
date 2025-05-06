@@ -23,12 +23,24 @@ public class Format {
     @OneToMany(mappedBy = "format")
     @JsonManagedReference
     private List<CurrentlyReading> current_reads;
+    @OneToMany(mappedBy = "format")
+    @JsonManagedReference
+    private List<Read> reads;
 
 
     public Format() {
         current_reads=new ArrayList<>();
+        reads=new ArrayList<>();
     }
 
+
+    public List<Read> getReads() {
+        return reads;
+    }
+
+    public void setReads(List<Read> reads) {
+        this.reads = reads;
+    }
 
     public Long getId() {
         return id;

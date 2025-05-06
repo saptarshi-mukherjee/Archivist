@@ -193,4 +193,36 @@ public class ReaderController {
         }
         return response_list;
     }
+
+
+    @PostMapping("/add/read")
+    public List<ReadResponseDto> addToRead(@RequestBody ReadRequestDto request) throws Exception {
+        List<Read> reads=reader_service.addToRead(request.getReader_name(),request.getBook_name(),request.getIsbn());
+        List<ReadResponseDto> response_list=new ArrayList<>();
+        for(Read read : reads) {
+            ReadResponseDto response=new ReadResponseDto();
+            response.setBook_name(read.getBook().getBook_name());
+            response.setIsbn(read.getFormat().getIsbn());
+            response.setStart_date(read.getStart_date());
+            response.setEnd_date(read.getEnd_date());
+            response_list.add(response);
+        }
+        return response_list;
+    }
+
+
+    @GetMapping("/get/read/{reader_name}")
+    public List<ReadResponseDto> getReads(@PathVariable("reader_name") String reader_name) {
+        List<Read> reads=reader_service.getReads(reader_name);
+        List<ReadResponseDto> response_list=new ArrayList<>();
+        for(Read read : reads) {
+            ReadResponseDto response=new ReadResponseDto();
+            response.setBook_name(read.getBook().getBook_name());
+            response.setIsbn(read.getFormat().getIsbn());
+            response.setStart_date(read.getStart_date());
+            response.setEnd_date(read.getEnd_date());
+            response_list.add(response);
+        }
+        return response_list;
+    }
 }

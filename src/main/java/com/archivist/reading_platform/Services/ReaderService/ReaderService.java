@@ -16,4 +16,7 @@ public interface ReaderService {
     public List<CurrentlyReading> addToCurrentlyReading(String reader_name, String book_name,String isbn);
     public List<CurrentlyReading> getCurrentlyReading(String reader_name);
     public List<CurrentlyReading> updateProgress(String book_name, String reader_name, int page_no) throws Exception;
+    public List<Read> addToRead(String reader_name, String book_name, String isbn) throws Exception;
+    public List<Read> getReads(String reader_name);
+    public void testScheduled();
 }

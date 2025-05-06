@@ -7,7 +7,8 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
-@Entity
+@Entity(name = "`read`")
+@Table(name = "`read`")
 public class Read {
 
     @Id
@@ -21,7 +22,18 @@ public class Read {
     @ManyToOne
     @JsonBackReference
     private Reader reader;
+    @ManyToOne
+    @JsonBackReference
+    private Format format;
 
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
+    }
 
     public Long getId() {
         return id;
