@@ -1,7 +1,11 @@
 package com.archivist.reading_platform.Services.EmailValidationService;
 
 
+import com.archivist.reading_platform.Models.EmailStatus;
+import com.archivist.reading_platform.Models.EmailValidator;
+import com.archivist.reading_platform.Models.Reader;
 import com.archivist.reading_platform.Repositories.EmailValidatorRepository;
+import com.archivist.reading_platform.Repositories.ReaderRepository;
 import com.archivist.reading_platform.Strategies.OtpGeneration.OtpGenerationStrategy;
 import com.archivist.reading_platform.Strategies.OtpGeneration.SecureRandomStrategy;
 import com.archivist.reading_platform.Threads.OtpDeletionThread;
@@ -19,12 +23,14 @@ public class EmailValidationServiceImpl implements EmailValidationService {
 
 
     private EmailValidatorRepository email_validator_repo;
+    private ReaderRepository reader_repo;
     private ExecutorService exs1;
     private ExecutorService exs2;
     private static final Object lock1 =new Object();
     private static final Object lock2=new Object();
 
-    public EmailValidationServiceImpl(EmailValidatorRepository email_validator_repo) {
+    public EmailValidationServiceImpl(EmailValidatorRepository email_validator_repo, ReaderRepository reader_repo) {
+        this.reader_repo=reader_repo;
         this.email_validator_repo = email_validator_repo;
         exs1 = Executors.newFixedThreadPool(20);
         exs2=Executors.newFixedThreadPool(5);
@@ -44,6 +50,20 @@ public class EmailValidationServiceImpl implements EmailValidationService {
     public void deleteOtp() {
         OtpDeletionThread otp_thread=new OtpDeletionThread(email_validator_repo,lock2);
         exs2.submit(otp_thread);
+    }
+
+    @Override
+    public boolean validateOtp(String email, int otp) {
+        EmailValidator email_validator=email_validator_repo.fetchOtpFromEmail(email,otp);
+        if(email_validator==null)
+            return false;
+        String reader_email=email_validator.getEmail();
+        Reader reader=reader_repo.fetchByReaderEmail(reader_email);
+        if(reader==null)
+            return false;
+        reader.setEmail_status(EmailStatus.VERIFIED);
+        reader_repo.save(reader);
+        return true;
     }
 
 

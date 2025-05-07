@@ -16,4 +16,12 @@ public interface ReaderRepository extends JpaRepository<Reader,Long> {
             nativeQuery = true
     )
     public Reader fetchByReaderName(@Param("reader_name") String reader_name);
+
+
+
+    @Query(
+            value = "select * from reader where email = :email",
+            nativeQuery = true
+    )
+    public Reader fetchByReaderEmail(@Param("email") String email);
 }
