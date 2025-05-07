@@ -13,7 +13,22 @@ public class User {
     protected Long id;
     protected String name, address, email;
     protected Long phone;
+    protected EmailStatus email_status;
 
+
+
+    public User() {
+        this.setEmail_status(EmailStatus.NOT_VERIFIED);
+    }
+
+
+    public EmailStatus getEmail_status() {
+        return email_status;
+    }
+
+    public void setEmail_status(EmailStatus email_status) {
+        this.email_status = email_status;
+    }
 
     public Long getId() {
         return id;

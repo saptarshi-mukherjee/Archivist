@@ -35,6 +35,7 @@ public class Reader extends User {
 
 
     public Reader() {
+        super();
         avg_rating=0.0;
         tbr=new ArrayList<>();
         current_reads=new ArrayList<>();
