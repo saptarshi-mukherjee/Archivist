@@ -1,6 +1,7 @@
 package com.archivist.reading_platform.Controllers.EmailValidationController;
 
 
+import com.archivist.reading_platform.DTO.RequestDTO.TestMailRequestDto;
 import com.archivist.reading_platform.Services.EmailValidationService.EmailValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +27,11 @@ public class EmailValidationController {
             return "validation successful";
         else
             throw new Exception("Email validation has failed");
+    }
+
+
+    @PostMapping("/test/mail")
+    public void testMail(@RequestBody TestMailRequestDto request) {
+        email_validation_service.testMail(request.getTo(), request.getSubject(), request.getBody());
     }
 }

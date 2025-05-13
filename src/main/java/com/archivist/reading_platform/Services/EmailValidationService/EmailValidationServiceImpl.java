@@ -11,6 +11,8 @@ import com.archivist.reading_platform.Strategies.OtpGeneration.SecureRandomStrat
 import com.archivist.reading_platform.Threads.OtpDeletionThread;
 import com.archivist.reading_platform.Threads.OtpGenerationThread;
 import jakarta.annotation.PreDestroy;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +30,13 @@ public class EmailValidationServiceImpl implements EmailValidationService {
     private ExecutorService exs2;
     private static final Object lock1 =new Object();
     private static final Object lock2=new Object();
+    private JavaMailSender mail_sender;
 
-    public EmailValidationServiceImpl(EmailValidatorRepository email_validator_repo, ReaderRepository reader_repo) {
+    public EmailValidationServiceImpl(EmailValidatorRepository email_validator_repo, ReaderRepository reader_repo,
+                                      JavaMailSender mail_sender) {
         this.reader_repo=reader_repo;
         this.email_validator_repo = email_validator_repo;
+        this.mail_sender=mail_sender;
         exs1 = Executors.newFixedThreadPool(20);
         exs2=Executors.newFixedThreadPool(5);
     }
@@ -64,6 +69,16 @@ public class EmailValidationServiceImpl implements EmailValidationService {
         reader.setEmail_status(EmailStatus.VERIFIED);
         reader_repo.save(reader);
         return true;
+    }
+
+    @Override
+    public void testMail(String to, String subject, String body) {
+        SimpleMailMessage msg=new SimpleMailMessage();
+        msg.setFrom("sapbum1234@gmail.com");
+        msg.setTo(to);
+        msg.setSubject(subject);
+        msg.setText(body);
+        mail_sender.send(msg);
     }
 
 
