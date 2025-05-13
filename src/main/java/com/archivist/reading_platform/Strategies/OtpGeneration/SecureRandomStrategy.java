@@ -11,19 +11,18 @@ public class SecureRandomStrategy implements OtpGenerationStrategy {
 
 
     private EmailValidatorRepository email_validator_repo;
-    Object lock;
+    //Object lock;
 
 
-    public SecureRandomStrategy(EmailValidatorRepository email_validator_repo, Object lock) {
+    public SecureRandomStrategy(EmailValidatorRepository email_validator_repo) {
         this.email_validator_repo = email_validator_repo;
-        this.lock=lock;
+        //this.lock=lock;
     }
 
     @Override
     public int generateOtp(String email) {
         SecureRandom random=new SecureRandom();
         EmailValidator email_validator=null;
-        synchronized (lock) {
             List<EmailValidator> otp_list = email_validator_repo.fetchAllOtps();
             HashSet<Integer> set = new HashSet<>();
             for (EmailValidator otp : otp_list) {
@@ -40,7 +39,7 @@ public class SecureRandomStrategy implements OtpGenerationStrategy {
                     break;
                 }
             }
-        }
+
         return email_validator.getOtp();
     }
 }

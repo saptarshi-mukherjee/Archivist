@@ -15,9 +15,8 @@ public class EmailValidationController {
     private EmailValidationService email_validation_service;
 
     @PostMapping("/generate/{email}")
-    public Integer generateOtp(@PathVariable("email") String email) throws Exception {
-        int otp= email_validation_service.generateOtp(email);
-        return otp;
+    public void generateOtp(@PathVariable("email") String email) throws Exception {
+        email_validation_service.generateOtp(email);
     }
 
 

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @Service
 public class EmailValidationServiceImpl implements EmailValidationService {
@@ -42,12 +41,10 @@ public class EmailValidationServiceImpl implements EmailValidationService {
     }
 
     @Override
-    public int generateOtp(String email) throws Exception {
-        OtpGenerationStrategy strategy=new SecureRandomStrategy(email_validator_repo, lock1);
-        OtpGenerationThread otp_thread=new OtpGenerationThread(email,strategy);
-        Future<Integer> otp_future= exs1.submit(otp_thread);
-        int otp=otp_future.get();
-        return otp;
+    public void generateOtp(String email) throws Exception {
+        OtpGenerationStrategy strategy=new SecureRandomStrategy(email_validator_repo);
+        OtpGenerationThread thread=new OtpGenerationThread(mail_sender,strategy,email,lock1);
+        exs1.submit(thread);
     }
 
     @Override
