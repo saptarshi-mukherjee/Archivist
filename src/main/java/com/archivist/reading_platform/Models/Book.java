@@ -17,34 +17,34 @@ public class Book {
     private String book_name;
     private Double avg_rating;
     @ManyToMany
-    @JsonManagedReference
+   // @JsonManagedReference("book-author")
     private List<Author> authors;
     @OneToMany(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-format")
     private List<Format> formats;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-series")
     private Series series;
     @OneToOne(mappedBy = "book")
-    @JsonBackReference
+    @JsonBackReference("book-tbr")
     private ToRead tbr_entry;
     @OneToMany(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-read")
     private List<Read> reads;
     @OneToMany(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-current")
     private List<CurrentlyReading> current_reads;
     @ManyToMany
-    @JsonManagedReference
+    //@JsonManagedReference("book-genre")
     private List<Genre> genres;
     @OneToMany(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-rating")
     private List<Rating> ratings;
     @OneToMany(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-review")
     private List<Review> reviews;
     @OneToOne(mappedBy = "book")
-    @JsonManagedReference
+    @JsonManagedReference("book-entry")
     private BookEntry book_entry;
 
 

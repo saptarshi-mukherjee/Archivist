@@ -16,13 +16,13 @@ public class Series {
     private String series_name;
     private Double avg_rating;
     @OneToMany(mappedBy = "series")
-    @JsonManagedReference
+    @JsonManagedReference("book-series")
     private List<Book> books;
     @OneToMany(mappedBy = "series")
-    @JsonManagedReference
+    @JsonManagedReference("rating-series")
     private List<Rating> ratings;
     @OneToMany(mappedBy = "series")
-    @JsonManagedReference
+    @JsonManagedReference("entry-series")
     private List<BookEntry> book_entries;
 
 

@@ -17,10 +17,10 @@ public class Comment {
     private String comment_text;
     private Integer like_count;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("comment-review")
     private Review review;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("comment-reader")
     private Reader reader;
     private LocalDateTime comment_time;
 

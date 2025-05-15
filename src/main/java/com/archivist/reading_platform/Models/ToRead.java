@@ -15,10 +15,10 @@ public class ToRead {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
-    @JsonManagedReference
+    @JsonManagedReference("book-tbr")
     private Book book;
     @ManyToMany(mappedBy = "tbr")
-    @JsonBackReference
+    //@JsonBackReference("reader-tbr")
     private List<Reader> readers;
 
 

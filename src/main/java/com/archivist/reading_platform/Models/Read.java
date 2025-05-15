@@ -15,15 +15,15 @@ public class Read {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-read")
     private Book book;
     private LocalDate start_date;
     private LocalDate end_date;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("read-reader")
     private Reader reader;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("format-read")
     private Format format;
 
 

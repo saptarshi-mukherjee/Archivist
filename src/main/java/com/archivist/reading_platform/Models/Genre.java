@@ -2,6 +2,7 @@ package com.archivist.reading_platform.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ public class Genre {
     private Long id;
     private String genre_name;
     @ManyToMany(mappedBy = "genres")
-    @JsonBackReference
+    //@JsonBackReference("book-genre")
+    @JsonIgnore
     private List<Book> books;
 
 

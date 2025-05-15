@@ -1,6 +1,7 @@
 package com.archivist.reading_platform.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -15,22 +16,23 @@ public class Reader extends User {
     private LocalDate birthday;
     private Double avg_rating;
     @ManyToMany
-    @JsonManagedReference
+    //@JsonManagedReference("reader-tbr")
+    @JsonIgnore
     private List<ToRead> tbr;
     @OneToMany(mappedBy = "reader")
-    @JsonManagedReference
+    @JsonManagedReference("current-reader")
     private List<CurrentlyReading> current_reads;
     @OneToMany(mappedBy = "reader")
-    @JsonManagedReference
+    @JsonManagedReference("rating-reader")
     private List<Rating> ratings;
     @OneToMany(mappedBy = "reader")
-    @JsonManagedReference
+    @JsonManagedReference("reader-review")
     private List<Review> reviews;
     @OneToMany(mappedBy = "reader")
-    @JsonManagedReference
+    @JsonManagedReference("comment-reader")
     private List<Comment> comments;
     @OneToMany(mappedBy = "reader")
-    @JsonManagedReference
+    @JsonManagedReference("read-reader")
     private List<Read> reads;
 
 

@@ -14,15 +14,15 @@ public class CurrentlyReading {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-current")
     private Book book;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("current-format")
     private Format format;
     private LocalDate start_date;
     private Double progress;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("current-reader")
     private Reader reader;
 
 

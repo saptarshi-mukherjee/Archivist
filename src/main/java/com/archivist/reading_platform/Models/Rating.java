@@ -2,6 +2,7 @@ package com.archivist.reading_platform.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,16 +16,17 @@ public class Rating {
     private Long id;
     private Double rating_value;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-rating")
     private Book book;
     @ManyToMany
-    @JsonBackReference
+    //@JsonBackReference("author-rating")
+    @JsonIgnore
     private List<Author> authors;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("rating-series")
     private Series series;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("rating-reader")
     private Reader reader;
 
 

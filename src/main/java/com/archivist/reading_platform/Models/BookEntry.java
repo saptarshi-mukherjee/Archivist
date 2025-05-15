@@ -11,11 +11,11 @@ public class BookEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
-    @JsonBackReference
+    @JsonBackReference("book-entry")
     private Book book;
     private Double book_number;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("entry-series")
     private Series series;
 
 

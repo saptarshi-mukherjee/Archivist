@@ -16,15 +16,15 @@ public class Format {
     private Long id;
     private String isbn;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-format")
     private Book book;
     private Integer page_count;
     private FormatType format_type;
     @OneToMany(mappedBy = "format")
-    @JsonManagedReference
+    @JsonManagedReference("current-format")
     private List<CurrentlyReading> current_reads;
     @OneToMany(mappedBy = "format")
-    @JsonManagedReference
+    @JsonManagedReference("format-read")
     private List<Read> reads;
 
 

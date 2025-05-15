@@ -1,5 +1,6 @@
 package com.archivist.reading_platform.Services.BookService;
 
+import com.archivist.reading_platform.DTO.ResponseDTO.SmallBookResponseDto;
 import com.archivist.reading_platform.Models.Book;
 import com.archivist.reading_platform.Models.BookEntry;
 
@@ -10,4 +11,5 @@ public interface BookService {
                         Double book_number);
     public List<Book> generalSearch(String prefix);
     public List<BookEntry> searchBooksInSeries(String series_name);
+    public SmallBookResponseDto getBookByName(String book_name);
 }

@@ -20,13 +20,13 @@ public class Review {
     private String review_text;
     private Integer like_count;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("reader-review")
     private Reader reader;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("book-review")
     private Book book;
     @OneToMany(mappedBy = "review")
-    @JsonManagedReference
+    @JsonManagedReference("comment-review")
     private List<Comment> comments;
     private LocalDateTime review_time;
 

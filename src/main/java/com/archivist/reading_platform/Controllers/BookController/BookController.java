@@ -5,6 +5,7 @@ import com.archivist.reading_platform.DTO.RequestDTO.NewBookRequestDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.BookListResponseDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.BookResponseDto;
 import com.archivist.reading_platform.DTO.ResponseDTO.GeneralSearchResponseDto;
+import com.archivist.reading_platform.DTO.ResponseDTO.SmallBookResponseDto;
 import com.archivist.reading_platform.Models.Author;
 import com.archivist.reading_platform.Models.Book;
 import com.archivist.reading_platform.Models.BookEntry;
@@ -80,5 +81,11 @@ public class BookController {
             response_list.add(response);
         }
         return response_list;
+    }
+
+
+    @GetMapping("/get")
+    public SmallBookResponseDto getBookByName(@RequestParam("book") String book_name) {
+        return book_service.getBookByName(book_name);
     }
 }

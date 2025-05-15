@@ -1,6 +1,7 @@
 package com.archivist.reading_platform.Services.BookService;
 
 
+import com.archivist.reading_platform.DTO.ResponseDTO.SmallBookResponseDto;
 import com.archivist.reading_platform.Models.Author;
 import com.archivist.reading_platform.Models.Book;
 import com.archivist.reading_platform.Models.BookEntry;
@@ -9,6 +10,8 @@ import com.archivist.reading_platform.Repositories.*;
 import com.archivist.reading_platform.Strategies.BookInsertion.BookInsertionStrategy;
 import com.archivist.reading_platform.Strategies.BookInsertion.CheckAndInsertStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +34,8 @@ public class BookServiceImpl implements BookService {
     SeriesRepository series_repo;
     @Autowired
     BookEntryRepository entry_repo;
+    @Autowired
+    CacheManager cache_manager;
 
 
     @Override
@@ -73,5 +78,26 @@ public class BookServiceImpl implements BookService {
         };
         Collections.sort(book_entries,comp);
         return book_entries;
+    }
+
+    @Override
+    public SmallBookResponseDto getBookByName(String book_name) {
+        Cache cache= cache_manager.getCache("BOOKS_CACHE");
+        if(cache!=null) {
+            SmallBookResponseDto cached_response=cache.get(book_name, SmallBookResponseDto.class);
+            if(cached_response!=null) {
+                System.out.println("FROM CACHE!!!");
+                return cached_response;
+            }
+        }
+        Book book=book_repo.fetchByBookName(book_name);
+        SmallBookResponseDto response=new SmallBookResponseDto();
+        response.setBook_name(book.getBook_name());
+        for(Author author : book.getAuthors())
+            response.getAuthors().add(author.getAuthor_name());
+        response.setSeries_name(book.getSeries().getSeries_name());
+        if(cache!=null)
+            cache.put(book_name,response);
+        return response;
     }
 }

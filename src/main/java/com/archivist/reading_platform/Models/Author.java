@@ -2,6 +2,7 @@ package com.archivist.reading_platform.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -17,10 +18,11 @@ public class Author {
     private String author_name;
     private Double avg_rating;
     @ManyToMany(mappedBy = "authors")
-    @JsonBackReference
+    //@JsonBackReference("book-author")
+    @JsonIgnore
     private List<Book> books;
     @ManyToMany(mappedBy = "authors")
-    @JsonManagedReference
+    //@JsonManagedReference("author-rating")
     private List<Rating> ratings;
 
 
