@@ -29,14 +29,26 @@ public class Review {
     @JsonManagedReference("comment-review")
     private List<Comment> comments;
     private LocalDateTime review_time;
+    @OneToMany(mappedBy = "review")
+    @JsonManagedReference("notification-review")
+    private List<Notification> notifications;
 
 
     public Review() {
         like_count=0;
         comments=new ArrayList<>();
         this.setReview_time(LocalDateTime.now());
+        notifications=new ArrayList<>();
     }
 
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 
     public LocalDateTime getReview_time() {
         return review_time;

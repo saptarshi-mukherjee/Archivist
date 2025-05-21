@@ -1,6 +1,7 @@
 package com.archivist.reading_platform.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
@@ -34,6 +35,14 @@ public class Reader extends User {
     @OneToMany(mappedBy = "reader")
     @JsonManagedReference("read-reader")
     private List<Read> reads;
+    @ManyToMany
+    private List<Reader> following;
+    @ManyToMany(mappedBy = "following")
+    @JsonIgnore
+    private List<Reader> followers;
+    @OneToMany(mappedBy = "publisher")
+    @JsonManagedReference("notification-reader")
+    private List<Notification> notifications;
 
 
     public Reader() {
@@ -45,8 +54,35 @@ public class Reader extends User {
         reviews=new ArrayList<>();
         comments=new ArrayList<>();
         reads=new ArrayList<>();
+        following=new ArrayList<>();
+        followers=new ArrayList<>();
+        notifications=new ArrayList<>();
     }
 
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public List<Reader> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<Reader> following) {
+        this.following = following;
+    }
+
+    public List<Reader> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<Reader> followers) {
+        this.followers = followers;
+    }
 
     public List<Read> getReads() {
         return reads;

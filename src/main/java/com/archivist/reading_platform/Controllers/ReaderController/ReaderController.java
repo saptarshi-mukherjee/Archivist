@@ -225,4 +225,15 @@ public class ReaderController {
         }
         return response_list;
     }
+
+
+    @PutMapping("/put/follow")
+    public FollowerResponseDto followReader(@RequestBody FollowerRequestDto request) {
+        return reader_service.followReader(request.getFollower_name(),request.getUsername());
+    }
+
+    @GetMapping("/get/follower/{reader_name}")
+    public FollowerResponseDto getFollowers(@PathVariable("reader_name") String reader_name) {
+        return reader_service.getFollowers(reader_name);
+    }
 }

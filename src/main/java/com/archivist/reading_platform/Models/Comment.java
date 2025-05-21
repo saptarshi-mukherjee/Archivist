@@ -2,9 +2,12 @@ package com.archivist.reading_platform.Models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Comment {
@@ -23,13 +26,25 @@ public class Comment {
     @JsonBackReference("comment-reader")
     private Reader reader;
     private LocalDateTime comment_time;
+    @OneToMany(mappedBy = "comment")
+    @JsonManagedReference("notification-comment")
+    private List<Notification> notifications;
 
 
     public Comment() {
         like_count=0;
         this.setComment_time(LocalDateTime.now());
+        notifications=new ArrayList<>();
     }
 
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 
     public LocalDateTime getComment_time() {
         return comment_time;

@@ -1,5 +1,6 @@
 package com.archivist.reading_platform.Services.ReaderService;
 
+import com.archivist.reading_platform.DTO.ResponseDTO.FollowerResponseDto;
 import com.archivist.reading_platform.Models.*;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ReaderService {
     public List<Read> addToRead(String reader_name, String book_name, String isbn) throws Exception;
     public List<Read> getReads(String reader_name);
     public void testScheduled();
+    public FollowerResponseDto followReader(String follower_name, String username);
+    public FollowerResponseDto getFollowers(String reader_name);
 }

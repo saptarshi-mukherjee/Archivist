@@ -1,7 +1,9 @@
 package com.archivist.reading_platform.Services.ReaderService;
 
+import com.archivist.reading_platform.DTO.ResponseDTO.FollowerResponseDto;
 import com.archivist.reading_platform.Factories.CurrentlyReadingStrategyFactory;
 import com.archivist.reading_platform.Models.*;
+import com.archivist.reading_platform.Projections.FollowerProjection;
 import com.archivist.reading_platform.Repositories.*;
 import com.archivist.reading_platform.Strategies.AddToCurrentlyReading.CurrentlyReadingStrategy;
 import com.archivist.reading_platform.Strategies.AverageRatingCalculation.AverageCalculationStrategy;
@@ -10,11 +12,13 @@ import com.archivist.reading_platform.Strategies.DateNormalisation.BasicStrategy
 import com.archivist.reading_platform.Strategies.DateNormalisation.IndianFormatStrategy;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +51,8 @@ public class ReaderServiceImpl implements ReaderService {
     CurrentlyReadingRepository current_read_repo;
     @Autowired
     ReadRepository read_repo;
+    @Autowired
+    private RedisTemplate<String,Object> redis_template;
 
 
     @Override
@@ -250,5 +256,34 @@ public class ReaderServiceImpl implements ReaderService {
     @Scheduled(cron = "0 */2 * * * *")
     public void testScheduled() {
         System.out.println("PRINTING!!!!!");
+    }
+
+    @Override
+    public FollowerResponseDto followReader(String follower_name, String username) {
+        Reader user=reader_repo.fetchByReaderName(username);
+        Reader follower=reader_repo.fetchByReaderName(follower_name);
+        user.getFollowers().add(follower);
+        follower.getFollowing().add(user);
+        user=reader_repo.save(user);
+        follower=reader_repo.save(follower);
+        FollowerResponseDto response=new FollowerResponseDto();
+        response.setUsername(user.getName());
+        for(Reader f : user.getFollowers())
+            response.getFollowers().add(f.getName());
+        return response;
+    }
+
+    @Override
+    public FollowerResponseDto getFollowers(String reader_name) {
+        FollowerResponseDto cached_response=(FollowerResponseDto) redis_template.opsForValue().get("FOLLOWERS::"+reader_name);
+        if(cached_response!=null)
+            return cached_response;
+        Reader reader=reader_repo.fetchByReaderName(reader_name);
+        FollowerResponseDto response=new FollowerResponseDto();
+        for(Reader follower : reader.getFollowers())
+            response.getFollowers().add(follower.getName());
+        response.setUsername(reader.getName());
+        redis_template.opsForValue().set("FOLLOWERS::"+reader_name,response, Duration.ofMinutes(15));
+        return response;
     }
 }
