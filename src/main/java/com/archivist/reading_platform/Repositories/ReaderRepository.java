@@ -35,4 +35,11 @@ public interface ReaderRepository extends JpaRepository<Reader,Long> {
     )
     public List<FollowerProjection> fetchFollower(@Param("follower_name") String follower_name,
                               @Param("username") String username);
+
+
+    @Query(
+            value = "select * from reader where id = :id",
+            nativeQuery = true
+    )
+    public Reader fetchByReaderId(@Param("id") long id);
 }

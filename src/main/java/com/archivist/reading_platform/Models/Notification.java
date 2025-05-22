@@ -27,6 +27,7 @@ public class Notification {
     @ManyToMany
     private List<Reader> subscribers;
     private LocalDateTime generation_time;
+    private NotificationType notification_type;
 
 
 
@@ -35,6 +36,14 @@ public class Notification {
         this.setGeneration_time(LocalDateTime.now());
     }
 
+
+    public NotificationType getNotification_type() {
+        return notification_type;
+    }
+
+    public void setNotification_type(NotificationType notification_type) {
+        this.notification_type = notification_type;
+    }
 
     public Long getId() {
         return id;

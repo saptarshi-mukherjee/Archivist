@@ -56,20 +56,7 @@ public class ReaderController {
 
     @PostMapping("/review")
     public AllBookReviewResponseDto reviewBook(@RequestBody ReviewRequestDto request) {
-        Book book=reader_service.reviewBook(request.getReader_name(), request.getBook_name(), request.getReview_text());
-        List<ReviewResponseDto> review_response_list=new ArrayList<>();
-        for(Review review : book.getReviews()) {
-            ReviewResponseDto review_response=new ReviewResponseDto();
-            review_response.setReader_name(review.getReader().getName());
-            review_response.setReview_time(review.getReview_time());
-            review_response.setReview_text(review.getReview_text());
-            review_response.setLike_count(review.getLike_count());
-            review_response_list.add(review_response);
-        }
-        AllBookReviewResponseDto response=new AllBookReviewResponseDto();
-        response.setBook_name(book.getBook_name());
-        response.setReviews(review_response_list);
-        return response;
+        return reader_service.reviewBook(request.getReader_name(),request.getBook_name(),request.getReview_text());
     }
 
 
@@ -86,23 +73,7 @@ public class ReaderController {
 
     @PostMapping("/comment")
     public AllCommentsResponseDto commentOnReview(@RequestBody CommentRequestDto request) {
-        Comment comment=reader_service.commentOnReview(request.getReview_id(), request.getCommenter_name(), request.getComment_text());
-        List<CommentResponseDto> comment_responses=new ArrayList<>();
-        for(Comment com : comment.getReview().getComments()) {
-            CommentResponseDto comment_response=new CommentResponseDto();
-            comment_response.setCommenter_name(com.getReader().getName());
-            comment_response.setComment_time(com.getComment_time());
-            comment_response.setComment_text(com.getComment_text());
-            comment_response.setLike_count(com.getLike_count());
-            comment_responses.add(comment_response);
-        }
-        AllCommentsResponseDto response=new AllCommentsResponseDto();
-        response.setReviewer_name(comment.getReview().getReader().getName());
-        response.setReview_time(comment.getReview().getReview_time());
-        response.setReview_text(comment.getReview().getReview_text());
-        response.setLike_count(comment.getReview().getLike_count());
-        response.setComments_list(comment_responses);
-        return response;
+        return reader_service.commentOnReview(request.getReview_id(),request.getCommenter_name(),request.getComment_text());
     }
 
 

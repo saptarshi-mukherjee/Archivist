@@ -1,16 +1,17 @@
 package com.archivist.reading_platform.Services.ReaderService;
 
-import com.archivist.reading_platform.DTO.ResponseDTO.FollowerResponseDto;
+import com.archivist.reading_platform.DTO.ResponseDTO.*;
 import com.archivist.reading_platform.Factories.CurrentlyReadingStrategyFactory;
 import com.archivist.reading_platform.Models.*;
-import com.archivist.reading_platform.Projections.FollowerProjection;
 import com.archivist.reading_platform.Repositories.*;
+import com.archivist.reading_platform.Services.NotificationService.NotificationService;
 import com.archivist.reading_platform.Strategies.AddToCurrentlyReading.CurrentlyReadingStrategy;
 import com.archivist.reading_platform.Strategies.AverageRatingCalculation.AverageCalculationStrategy;
 import com.archivist.reading_platform.Strategies.AverageRatingCalculation.SimpleAverageCalculationStrategy;
 import com.archivist.reading_platform.Strategies.DateNormalisation.BasicStrategy;
 import com.archivist.reading_platform.Strategies.DateNormalisation.IndianFormatStrategy;
 import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -53,6 +54,8 @@ public class ReaderServiceImpl implements ReaderService {
     ReadRepository read_repo;
     @Autowired
     private RedisTemplate<String,Object> redis_template;
+    @Autowired
+    private NotificationService notification_service;
 
 
     @Override
@@ -104,7 +107,7 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Book reviewBook(String reader_name, String book_name, String review_text) {
+    public AllBookReviewResponseDto reviewBook(String reader_name, String book_name, String review_text) {
         Book book=book_repo.fetchByBookName(book_name);
         Reader reader=reader_repo.fetchByReaderName(reader_name);
         Review review=new Review();
@@ -115,8 +118,22 @@ public class ReaderServiceImpl implements ReaderService {
         book.getReviews().add(review);
         book=book_repo.save(book);
         reader.getReviews().add(review);
-        reader_repo.save(reader);
-        return book;
+        reader=reader_repo.save(reader);
+        List<ReviewResponseDto> review_response_list=new ArrayList<>();
+        for(Review r : book.getReviews()) {
+            ReviewResponseDto review_response=new ReviewResponseDto();
+            review_response.setReader_name(r.getReader().getName());
+            review_response.setReview_time(r.getReview_time());
+            review_response.setReview_text(r.getReview_text());
+            review_response.setLike_count(r.getLike_count());
+            review_response_list.add(review_response);
+        }
+        AllBookReviewResponseDto response=new AllBookReviewResponseDto();
+        response.setBook_name(book.getBook_name());
+        response.setReviews(review_response_list);
+        List<Reader> followers=new ArrayList<>(reader.getFollowers());
+        notification_service.postNotification(reader.getId(),review.getId(),null,followers);
+        return response;
     }
 
     @Override
@@ -128,7 +145,7 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Comment commentOnReview(long review_id, String reader_name, String comment_text) {
+    public AllCommentsResponseDto commentOnReview(long review_id, String reader_name, String comment_text) {
         Review review=review_repo.fetchByReviewId(review_id);
         Reader reader=reader_repo.fetchByReaderName(reader_name);
         Comment comment=new Comment();
@@ -137,10 +154,28 @@ public class ReaderServiceImpl implements ReaderService {
         comment.setComment_text(comment_text);
         comment=comment_repo.save(comment);
         review.getComments().add(comment);
-        review_repo.save(review);
+        review=review_repo.save(review);
         reader.getComments().add(comment);
-        reader_repo.save(reader);
-        return comment;
+        reader=reader_repo.save(reader);
+        comment_repo.flush();
+        List<CommentResponseDto> comment_responses=new ArrayList<>();
+        for(Comment com : comment.getReview().getComments()) {
+            CommentResponseDto comment_response=new CommentResponseDto();
+            comment_response.setCommenter_name(com.getReader().getName());
+            comment_response.setComment_time(com.getComment_time());
+            comment_response.setComment_text(com.getComment_text());
+            comment_response.setLike_count(com.getLike_count());
+            comment_responses.add(comment_response);
+        }
+        AllCommentsResponseDto response=new AllCommentsResponseDto();
+        response.setReviewer_name(comment.getReview().getReader().getName());
+        response.setReview_time(comment.getReview().getReview_time());
+        response.setReview_text(comment.getReview().getReview_text());
+        response.setLike_count(comment.getReview().getLike_count());
+        response.setComments_list(comment_responses);
+        List<Reader> followers=new ArrayList<>(reader.getFollowers());
+        notification_service.postNotification(reader.getId(),review.getId(),comment.getId(),followers);
+        return response;
     }
 
     @Override
@@ -270,6 +305,7 @@ public class ReaderServiceImpl implements ReaderService {
         response.setUsername(user.getName());
         for(Reader f : user.getFollowers())
             response.getFollowers().add(f.getName());
+        notification_service.postNotification(follower.getId(),null,null,List.of(user));
         return response;
     }
 
